@@ -1,20 +1,31 @@
 #include "Particle.h"
 #include <cstdlib>
 
+float Particle::smoothingFactor = 0.001f;
+
+void Particle::integrate(double timestep) {
+	velocity += netForce * timestep;
+	position += velocity * timestep;
+}
+
+void Particle::calculateForces() {
+	float gravity = -10.0f / (position.magnitudeSquared() + smoothingFactor);
+	netForce = { position.x * gravity, position.y * gravity };
+}
+
 void Particle::update(double timestep) {
-	if (x > 1) {
-		xV = -abs(xV);
+	if (position.x > 1) {
+		velocity.x = -abs(velocity.x);
 	}
-	if (x < -1) {
-		xV = abs(xV);
+	if (position.x < -1) {
+		velocity.x = abs(velocity.x);
 	}
-	if (y > 1) {
-		yV = -abs(yV);
+	if (position.y > 1) {
+		velocity.y = -abs(velocity.y);
 	}
-	if (y < -1) {
-		yV = abs(yV);
+	if (position.y < -1) {
+		velocity.y = abs(velocity.y);
 	}
-	x += xV * timestep;
-	y += yV * timestep;
-	yV -= .5f * timestep;
+	calculateForces();
+	integrate(timestep);
 }

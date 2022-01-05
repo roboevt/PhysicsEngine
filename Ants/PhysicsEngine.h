@@ -12,6 +12,7 @@ public:
 	double currentTime, timestep;
 	void render();
 	void update();
-	void generateParticles(unsigned int numParticles);
+	void generateRandomParticles(unsigned int numParticles);
+	void generateCirclingParticles(unsigned int numParticles);
 	PhysicsEngine();
 };

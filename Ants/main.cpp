@@ -11,7 +11,7 @@ const unsigned int WIDTH = 1920, HEIGHT = 1080;
 
 GLFWwindow* initWindow() {
     glfwInit();
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Physics", nullptr, nullptr);
     int screenWidth, screenHeight;
     glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
     if (window == nullptr)
@@ -36,7 +36,7 @@ int main()
     GLFWwindow* window = initWindow();
 
     PhysicsEngine physicsEngine = PhysicsEngine();
-    physicsEngine.generateParticles(100);
+    physicsEngine.generateRandomParticles(1000);
 
     int frame = 0;
     double lastTime = 0;
