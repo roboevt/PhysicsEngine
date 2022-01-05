@@ -9,10 +9,15 @@ class PhysicsEngine
 {
 public:
 	std::vector<std::shared_ptr<PhysicsObject>> objects;
-	double currentTime, timestep;
+	double currentTime, timestep, speed;
+	bool paused;
+	PhysicsEngine();
 	void render();
 	void update();
 	void generateRandomParticles(unsigned int numParticles);
 	void generateCirclingParticles(unsigned int numParticles);
-	PhysicsEngine();
+	void clear();
+	void increaseSpeed();
+	void decreaseSpeed();
+	void pause();
 };

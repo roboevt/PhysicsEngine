@@ -9,6 +9,8 @@
 
 const unsigned int WIDTH = 1920, HEIGHT = 1080;
 
+PhysicsEngine physicsEngine = PhysicsEngine();
+
 GLFWwindow* initWindow() {
     glfwInit();
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Physics", nullptr, nullptr);
@@ -31,12 +33,46 @@ GLFWwindow* initWindow() {
     return window;
 }
 
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (action == GLFW_PRESS) {
+        std::cout << key << std::endl;
+        switch (key) {
+        case GLFW_KEY_UP:
+            physicsEngine.increaseSpeed();
+            break;
+        case GLFW_KEY_DOWN:
+            physicsEngine.decreaseSpeed();
+            break;
+        case GLFW_KEY_DELETE:
+            physicsEngine.clear();
+            break;
+        case GLFW_KEY_R:
+            physicsEngine.generateRandomParticles(100);
+            break;
+        case GLFW_KEY_C:
+            physicsEngine.generateCirclingParticles(100);
+            break;
+        case GLFW_KEY_SPACE:
+            physicsEngine.pause();
+            break;
+        case GLFW_KEY_ESCAPE:
+            glfwSetWindowShouldClose(window, true);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 int main()
 {
     GLFWwindow* window = initWindow();
 
-    PhysicsEngine physicsEngine = PhysicsEngine();
-    physicsEngine.generateRandomParticles(1000);
+    glfwSetKeyCallback(window, keyCallback);
+    glEnable(GL_POINT_SMOOTH);
+    glPointSize(5.0);
+    physicsEngine.generateCirclingParticles(1000);
 
     int frame = 0;
     double lastTime = 0;

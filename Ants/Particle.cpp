@@ -10,7 +10,7 @@ void Particle::integrate(double timestep) {
 
 void Particle::calculateForces() {
 	float gravity = -10.0f / (position.magnitudeSquared() + smoothingFactor);
-	netForce = { position.x * gravity, position.y * gravity };
+	netForce = position * gravity;
 }
 
 void Particle::update(double timestep) {
