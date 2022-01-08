@@ -2,18 +2,30 @@
 #include "Particle.h"
 #include <stdlib.h>
 #include <iostream>
-#include <algorithm>
+#include <algorithm> 
 
-PhysicsEngine::PhysicsEngine() : timestep(0), currentTime(0), speed(1) {
+PhysicsEngine::PhysicsEngine() : timestep(0), currentTime(0), speed(1), paused(false) {
 }
 
 void PhysicsEngine::render() {
-    glBegin(GL_POINTS);
-    for (std::shared_ptr<PhysicsObject> object : objects) {
-        glColor3ub(object->r, object->g, object->b);
-        glVertex2f(object->position.x, object->position.y);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+
+    glVertexPointer(2, GL_FLOAT, sizeof(Particle), &objects[0].position);
+    glColorPointer(3, GL_BYTE, sizeof(Particle), &objects[0].color);
+    glDrawArrays(GL_POINTS, 0, objects.size());
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    
+    /*glBegin(GL_POINTS);
+    for (int i = 0; i < objects.size(); i++) {
+        glColor3ub(objects[i].color.r, objects[i].color.g, objects[i].color.b);
+        glVertex2f(objects[i].position.x, objects[i].position.y);
     }
-    glEnd();
+    glEnd();*/
 }
 
 void PhysicsEngine::update() {
@@ -22,9 +34,11 @@ void PhysicsEngine::update() {
         currentTime = glfwGetTime();
         timestep = currentTime - oldTime;
         timestep *= speed / 10;
-        timestep = std::clamp(timestep, 0.0, .001);
-        for (std::shared_ptr<PhysicsObject> object : objects) {
-            object->update(timestep);
+        if (timestep > 0.001) {
+            timestep = 0.001;
+        }
+        for (int i = 0; i < objects.size(); i++) {
+            objects[i].update(timestep);
         }
     }
 }
@@ -36,52 +50,49 @@ float random() {
 
 void PhysicsEngine::generateRandomParticles(unsigned int numParticles) {
     for (int i = 0; i < numParticles; i++) {
-        std::shared_ptr<PhysicsObject> particle = std::make_shared<Particle>();
-        particle->position.x = random();
-        particle->position.y = random();
-        particle->velocity.x = random();
-        particle->velocity.y = random();
-        particle->r = rand() % 255;
-        particle->g = rand() % 255;
-        particle->b = rand() % 255;
+        Particle particle;
+        particle.position.x = random();
+        particle.position.y = random();
+        particle.velocity.x = random();
+        particle.velocity.y = random();
+        particle.color = Color(rand() % 255, rand() & 255, rand() % 255);
+        particle.others = &objects;
         objects.push_back(particle);
     }
 }
 
 void PhysicsEngine::generateCirclingParticles(unsigned int numParticles) {
     for (int i = 0; i < numParticles / 2; i++) {
-        std::shared_ptr<PhysicsObject> particle = std::make_shared<Particle>();
+        Particle particle;
         float x = random() / 4 + .25f;
         float y = random() / 2;
-        particle->position.x = x;
-        particle->position.y = y;
+        particle.position.x = x;
+        particle.position.y = y;
         float distance = sqrt(x * x + y * y);
         float angle = atan(y / x);
-        particle->velocity.x = sin(angle) * 2;
-        particle->velocity.y = -cos(angle) * 2;
-        particle->velocity.x *= random() + 1;
-        particle->velocity.y *= random() + 1;
-        particle->r = rand() % 255;
-        particle->g = rand() % 255;
-        particle->b = rand() % 255;
+        particle.velocity.x = sin(angle) * 2;
+        particle.velocity.y = -cos(angle) * 2;
+        particle.velocity.x *= random() + 1;
+        particle.velocity.y *= random() + 1;
+        particle.color = Color(rand() % 255, rand() & 255, rand() % 255);
+        particle.others = &objects;
         objects.push_back(particle);
     }
 
     for (int i = 0; i < numParticles / 2; i++) {
-        std::shared_ptr<PhysicsObject> particle = std::make_shared<Particle>();
+        Particle particle;
         float x = random() / 4 - .25f;
         float y = random() / 2;
-        particle->position.x = x;
-        particle->position.y = y;
+        particle.position.x = x;
+        particle.position.y = y;
         float distance = sqrt(x * x + y * y);
         float angle = atan(y / x);
-        particle->velocity.x = -sin(angle) * 2;
-        particle->velocity.y = cos(angle) * 2;
-        particle->velocity.x *= random() + 1;
-        particle->velocity.y *= random() + 1;
-        particle->r = rand() % 255;
-        particle->g = rand() % 255;
-        particle->b = rand() % 255;
+        particle.velocity.x = -sin(angle) * 2;
+        particle.velocity.y = cos(angle) * 2;
+        particle.velocity.x *= random() + 1;
+        particle.velocity.y *= random() + 1;
+        particle.color = Color(rand() % 255, rand() & 255, rand() % 255);
+        particle.others = &objects;
         objects.push_back(particle);
     }
 }

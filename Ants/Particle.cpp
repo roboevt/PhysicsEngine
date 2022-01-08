@@ -1,5 +1,6 @@
 #include "Particle.h"
 #include <cstdlib>
+#include <algorithm>
 
 float Particle::smoothingFactor = 0.001f;
 
@@ -9,8 +10,15 @@ void Particle::integrate(double timestep) {
 }
 
 void Particle::calculateForces() {
-	float gravity = -10.0f / (position.magnitudeSquared() + smoothingFactor);
-	netForce = position * gravity;
+	netForce = { 0, 0 };
+	for (Particle other : *others) {
+		Vec2 distance = other.position - this->position;
+		float gravity = 100.0f / (distance.magnitude() + smoothingFactor);
+		netForce += distance * gravity;
+
+	}
+	//float gravity = -10.0f / (position.magnitudeSquared() + smoothingFactor);
+	//netForce = position * gravity;
 }
 
 void Particle::update(double timestep) {

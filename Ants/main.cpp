@@ -7,13 +7,19 @@
 
 #include "PhysicsEngine.h"
 
+/*extern "C" {
+    _declspec(dllexport) DWORD NvOptimusEnablement = 1;
+    _declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}*/
+
 const unsigned int WIDTH = 1280, HEIGHT = 720;
-const unsigned int ADDITIONAL_PARTICLES = 100;
+const unsigned int INITIAL_PARTICLES = 4;
+const unsigned int ADDITIONAL_PARTICLES = 10;
 
 PhysicsEngine physicsEngine = PhysicsEngine();
 
 void renderFrame(GLFWwindow* window) {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.4f, 0.6f, 0.6f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     physicsEngine.update();
@@ -88,8 +94,8 @@ int main()
 
     glfwSetKeyCallback(window, keyCallback);
     glEnable(GL_POINT_SMOOTH);
-    glPointSize(5.0);
-    physicsEngine.generateCirclingParticles(1000);
+    glPointSize(16.0);
+    physicsEngine.generateCirclingParticles(INITIAL_PARTICLES);
 
     int frame = 0;
     double lastTime = 0;
@@ -110,8 +116,6 @@ int main()
         renderFrame(window);
         
     }
-
-    // Terminate GLFW, clearing any resources allocated by GLFW.
     glfwTerminate();
     return EXIT_SUCCESS;
 }

@@ -3,12 +3,14 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "PhysicsObject.h"
+#include "Particle.h"
 #include <vector>
 #include <memory>
+
 class PhysicsEngine
 {
 public:
-	std::vector<std::shared_ptr<PhysicsObject>> objects;
+	std::vector<Particle> objects;
 	double currentTime, timestep, speed;
 	bool paused;
 	PhysicsEngine();

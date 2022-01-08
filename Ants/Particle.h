@@ -1,5 +1,7 @@
 #pragma once
 #include "PhysicsObject.h"
+#include <vector>
+
 class Particle : public PhysicsObject
 {
 public:
@@ -7,5 +9,8 @@ public:
 	void integrate(double timestep);
 	void calculateForces();
 	static float smoothingFactor;
+	//static std::vector<Particle>* others;
+	std::vector<Particle>* others;
 };
 
+//std::vector<Particle>* others;
