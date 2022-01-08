@@ -7,9 +7,26 @@
 
 #include "PhysicsEngine.h"
 
-const unsigned int WIDTH = 1920, HEIGHT = 1080;
+const unsigned int WIDTH = 1280, HEIGHT = 720;
+const unsigned int ADDITIONAL_PARTICLES = 100;
 
 PhysicsEngine physicsEngine = PhysicsEngine();
+
+void renderFrame(GLFWwindow* window) {
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    physicsEngine.update();
+    physicsEngine.render();
+
+    glfwSwapBuffers(window);
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+    renderFrame(window);
+}
 
 GLFWwindow* initWindow() {
     glfwInit();
@@ -30,13 +47,13 @@ GLFWwindow* initWindow() {
         return nullptr;
     }
     glViewport(0, 0, screenWidth, screenHeight);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     return window;
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (action == GLFW_PRESS) {
-        std::cout << key << std::endl;
         switch (key) {
         case GLFW_KEY_UP:
             physicsEngine.increaseSpeed();
@@ -48,10 +65,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             physicsEngine.clear();
             break;
         case GLFW_KEY_R:
-            physicsEngine.generateRandomParticles(100);
+            physicsEngine.generateRandomParticles(ADDITIONAL_PARTICLES);
             break;
         case GLFW_KEY_C:
-            physicsEngine.generateCirclingParticles(100);
+            physicsEngine.generateCirclingParticles(ADDITIONAL_PARTICLES);
             break;
         case GLFW_KEY_SPACE:
             physicsEngine.pause();
@@ -90,13 +107,8 @@ int main()
             lastTime = currentTime;
         }
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        physicsEngine.update();
-        physicsEngine.render();
-
-        glfwSwapBuffers(window);
+        renderFrame(window);
+        
     }
 
     // Terminate GLFW, clearing any resources allocated by GLFW.

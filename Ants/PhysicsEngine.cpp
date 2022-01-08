@@ -2,6 +2,7 @@
 #include "Particle.h"
 #include <stdlib.h>
 #include <iostream>
+#include <algorithm>
 
 PhysicsEngine::PhysicsEngine() : timestep(0), currentTime(0), speed(1) {
 }
@@ -21,6 +22,7 @@ void PhysicsEngine::update() {
         currentTime = glfwGetTime();
         timestep = currentTime - oldTime;
         timestep *= speed / 10;
+        timestep = std::clamp(timestep, 0.0, .001);
         for (std::shared_ptr<PhysicsObject> object : objects) {
             object->update(timestep);
         }
@@ -90,7 +92,8 @@ void PhysicsEngine::clear() {
 }
 
 void PhysicsEngine::increaseSpeed() {
-    speed *= 1.2f;
+    if(speed < 10)
+        speed *= 1.2f;
 }
 
 void PhysicsEngine::decreaseSpeed() {
