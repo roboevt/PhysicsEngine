@@ -2,7 +2,9 @@
 #include <cstdlib>
 #include <algorithm>
 
-float Particle::smoothingFactor = 0.001f;
+float Particle::smoothingFactor = 0.0001f;
+
+const float DAMPING_FACTOR = 0.8f;
 
 void Particle::integrate(double timestep) {
 	velocity += netForce * timestep;
@@ -13,7 +15,7 @@ void Particle::calculateForces() {
 	netForce = { 0, 0 };
 	for (Particle other : *others) {
 		Vec2 distance = other.position - this->position;
-		float gravity = 100.0f / (distance.magnitude() + smoothingFactor);
+		float gravity = 100.0f / (distance.magnitudeSquared() + smoothingFactor);
 		netForce += distance * gravity;
 
 	}
@@ -23,16 +25,16 @@ void Particle::calculateForces() {
 
 void Particle::update(double timestep) {
 	if (position.x > 1) {
-		velocity.x = -abs(velocity.x);
+		velocity.x = -abs(velocity.x) * DAMPING_FACTOR ;
 	}
 	if (position.x < -1) {
-		velocity.x = abs(velocity.x);
+		velocity.x = abs(velocity.x) * DAMPING_FACTOR;
 	}
 	if (position.y > 1) {
-		velocity.y = -abs(velocity.y);
+		velocity.y = -abs(velocity.y) * DAMPING_FACTOR;
 	}
 	if (position.y < -1) {
-		velocity.y = abs(velocity.y);
+		velocity.y = abs(velocity.y) * DAMPING_FACTOR;
 	}
 	calculateForces();
 	integrate(timestep);

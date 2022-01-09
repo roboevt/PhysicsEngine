@@ -12,7 +12,7 @@ void PhysicsEngine::render() {
     glEnableClientState(GL_COLOR_ARRAY);
 
     glVertexPointer(2, GL_FLOAT, sizeof(Particle), &objects[0].position);
-    glColorPointer(3, GL_BYTE, sizeof(Particle), &objects[0].color);
+    glColorPointer(3, GL_UNSIGNED_BYTE, sizeof(Particle), &objects[0].color);
     glDrawArrays(GL_POINTS, 0, objects.size());
 
     glDisableClientState(GL_VERTEX_ARRAY);
@@ -95,6 +95,14 @@ void PhysicsEngine::generateCirclingParticles(unsigned int numParticles) {
         particle.others = &objects;
         objects.push_back(particle);
     }
+}
+
+void PhysicsEngine::generateParticle(float x, float y) {
+    Particle particle;
+    particle.position = { x, y };
+    particle.others = &objects;
+    particle.color = Color(rand() % 255, rand() & 255, rand() % 255);
+    objects.push_back(particle);
 }
 
 void PhysicsEngine::clear() {

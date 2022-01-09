@@ -18,6 +18,7 @@ public:
 	void update();
 	void generateRandomParticles(unsigned int numParticles);
 	void generateCirclingParticles(unsigned int numParticles);
+	void generateParticle(float x, float y);
 	void clear();
 	void increaseSpeed();
 	void decreaseSpeed();

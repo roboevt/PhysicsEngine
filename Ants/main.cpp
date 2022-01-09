@@ -4,8 +4,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <Windows.h>
+#include <chrono>
 
 #include "PhysicsEngine.h"
+
+using namespace std::chrono_literals;
 
 /*extern "C" {
     _declspec(dllexport) DWORD NvOptimusEnablement = 1;
@@ -34,6 +37,21 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     renderFrame(window);
 }
 
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);  // curser in pixelf from top left
+        xpos /= WIDTH;
+        xpos -= .5;
+        xpos *= 2;
+        ypos /= HEIGHT;
+        ypos -= .5;
+        ypos *= -2;
+        physicsEngine.generateParticle(xpos, ypos);
+    }
+}
+
 GLFWwindow* initWindow() {
     glfwInit();
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Physics", nullptr, nullptr);
@@ -54,6 +72,7 @@ GLFWwindow* initWindow() {
     }
     glViewport(0, 0, screenWidth, screenHeight);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
     return window;
 }
 
