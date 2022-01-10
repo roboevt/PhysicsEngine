@@ -5,6 +5,7 @@
 #include <algorithm> 
 
 PhysicsEngine::PhysicsEngine() : timestep(0), currentTime(0), speed(1), paused(false) {
+    srand(time(0));
 }
 
 void PhysicsEngine::render() {
@@ -102,6 +103,7 @@ void PhysicsEngine::generateParticle(float x, float y) {
     particle.position = { x, y };
     particle.others = &objects;
     particle.color = Color(rand() % 255, rand() & 255, rand() % 255);
+    particle.mass = (rand() + 1) * 5;
     objects.push_back(particle);
 }
 

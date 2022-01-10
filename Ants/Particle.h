@@ -9,6 +9,7 @@ public:
 	void integrate(double timestep);
 	void calculateForces();
 	static float smoothingFactor;
+	const static float gravitationalConstant;
 	//static std::vector<Particle>* others;
 	std::vector<Particle>* others;
 };
